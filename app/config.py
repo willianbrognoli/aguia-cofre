@@ -6,7 +6,7 @@ DADOS_DIR = Path(os.getenv("DADOS_DIR", "/data"))
 GUARDAR_ENUNCIADO = os.getenv("GUARDAR_ENUNCIADO", "1") == "1"
 OPENAI_API_KEY = os.getenv("OPENAI_API_KEY", "")
 ANTHROPIC_API_KEY = os.getenv("ANTHROPIC_API_KEY", "")
-VERSAO = "0.1.0"
+VERSAO = "0.2.1"
 
 
 def usuarios() -> dict[str, str]:
