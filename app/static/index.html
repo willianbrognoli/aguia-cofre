@@ -42,6 +42,7 @@ h2 { font-size: 22px; }
 /* estrutura */
 .app { display: grid; grid-template-columns: 232px 1fr; min-height: 100vh; background: linear-gradient(to right, var(--tinta) 232px, var(--papel) 232px); }
 #conteudo:focus { outline: none; }
+.so-celular { display: none; }
 .lateral { border-right: 1px solid rgba(204,169,119,.25); background: var(--tinta); color: #d7deea; display: flex; flex-direction: column; position: sticky; top: 0; height: 100vh; }
 .marca { padding: 22px 22px 26px; border-bottom: 1px solid rgba(255,255,255,.08); }
 .marca img { display: block; width: 150px; height: auto; margin-bottom: 14px; }
@@ -55,6 +56,8 @@ h2 { font-size: 22px; }
 .contador { min-width: 26px; padding: 1px 7px; border-radius: 20px; background: var(--ouro); color: var(--tinta); font-family: var(--titulo); font-weight: 700; font-size: 14px; text-align: center; }
 .lateral__pe { margin-top: auto; padding: 16px 22px; border-top: 1px solid rgba(255,255,255,.08); font-size: 13px; color: #97a3b8; }
 .lateral__pe b { color: #fff; font-weight: 600; }
+.sair { display: block; margin-top: 6px; color: var(--ouro); text-decoration: none; font-weight: 600; }
+.sair:hover { text-decoration: underline; }
 
 .principal { min-width: 0; }
 .aviso { background: #1a1a1a; color: #e8d4b8; border-bottom: 1px solid rgba(204,169,119,.35); padding: 8px 32px; font-size: 14px; }
@@ -204,6 +207,8 @@ input[type=checkbox] { width: 16px; height: 16px; accent-color: var(--tinta); ma
   .menu { display: flex; overflow-x: auto; padding: 0 8px 8px; margin: 0; }
   .menu a { white-space: nowrap; }
   .lateral__pe { display: none; }
+  .so-celular { display: list-item; }
+  .marca { flex-wrap: wrap; }
   .conteudo { padding: 20px 16px 40px; }
   .aviso { padding: 8px 16px; }
   .faixa { grid-template-columns: 1fr 1fr; }
@@ -226,9 +231,10 @@ input[type=checkbox] { width: 16px; height: 16px; accent-color: var(--tinta); ma
         <li><a href="#enviar" data-rota="enviar">Enviar arquivo</a></li>
         <li><a href="#revisar" data-rota="revisar">Revisar <span class="contador" id="menu-revisar">–</span></a></li>
         <li><a href="#filtrar" data-rota="filtrar">Montar caderno</a></li>
+        <li class="so-celular"><a href="/sair">Sair</a></li>
       </ul>
     </nav>
-    <div class="lateral__pe">Conectado como <b id="usuario">…</b></div>
+    <div class="lateral__pe">Conectado como <b id="usuario">…</b><a class="sair" href="/sair">Sair</a></div>
   </aside>
 
   <div class="principal">
@@ -255,6 +261,7 @@ async function api(caminho, corpo) {
   const r = await fetch('/api' + caminho, corpo === undefined ? {} : {
     method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify(corpo)
   });
+  if (r.status === 401) { location.href = '/login'; throw new Error('Sessão expirada'); }
   if (!r.ok) throw new Error(`Erro ${r.status} em ${caminho}`);
   const j = await r.json();
   if (j.exemplo) $('#aviso-exemplo').hidden = false;
@@ -622,7 +629,9 @@ async function navegar() {
 
 (async () => {
   try {
-    const eu = await fetch('/api/eu').then(r => r.json());
+    const r = await fetch('/api/eu');
+    if (r.status === 401) { location.href = '/login'; return; }
+    const eu = await r.json();
     $('#usuario').textContent = eu.usuario;
   } catch { $('#usuario').textContent = '—'; }
   await carregarResumo().catch(() => {});
