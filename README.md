@@ -4,8 +4,9 @@ Banco de questões do Projeto Águia: lê cadernos do Tec Concursos (PDF), class
 
 > O sistema **nunca acessa o Tec Concursos** de forma automatizada. Gerar o PDF e colar os códigos continuam manuais.
 
-## Estado atual (v0.1.0)
-- Serviço FastAPI com `/health` (aberto) e `/` (com usuário e senha).
+## Estado atual (v0.2.1)
+- Serviço FastAPI com `/health` (aberto) e painel em `/` (com usuário e senha).
+- Painel com Painel, Enviar arquivo, Revisar e Montar caderno usando **dados de exemplo** (`app/api_exemplo.py`).
 - Banco Postgres + pgvector com a estrutura completa, criada sozinha na primeira subida.
 - Próximas etapas: leitura do PDF, classificação, revisão, comentários, exportação.
 
@@ -15,7 +16,7 @@ Veja `.env.example`.
 | Variável | Para quê |
 |---|---|
 | `DATABASE_URL` | Conexão com o Postgres (pgvector) |
-| `USUARIOS` | `usuario:hash,usuario:hash` (hash gerado por `scripts/gerar_hash.py`) |
+| `USUARIOS` | `usuario:senha,usuario:senha` (senha em texto ou hash bcrypt de `scripts/gerar_hash.py`) |
 | `DADOS_DIR` | Pasta dos arquivos enviados (volume) |
 | `GUARDAR_ENUNCIADO` | `1` guarda o texto das questões; `0` guarda só código, tópicos e comentário |
 | `OPENAI_API_KEY` / `ANTHROPIC_API_KEY` | Usadas nas próximas etapas |
